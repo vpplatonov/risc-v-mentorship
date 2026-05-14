@@ -38,6 +38,42 @@ This simulation is a natural iteration example. For each generation, the program
 loops over the grid, counts the live neighbors around every cell, applies the
 rules, and renders the next grid as ASCII graphics.
 
+## Prerequisites (macOS Apple Silicon)
+
+Install Homebrew (if not installed):
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+Install toolchains and required tools:
+
+```bash
+brew tap riscv-software-src/riscv
+brew install riscv-tools make python
+```
+
+Ensure Homebrew binaries are on PATH:
+
+```bash
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+Verify RISC-V compiler is available:
+
+```bash
+which riscv64-unknown-elf-gcc
+riscv64-unknown-elf-gcc --version
+```
+
+Build firmware scaffold:
+
+```bash
+make -C "src/c/Firmware/firmware" CC=riscv64-unknown-elf-gcc
+```
+
 ## Run
 
-See `src/README.md`.
+- For Tower of Hanoi and Conway demos: `src/README.md`
+- For RISC-V ACT firmware scaffold build/demo: `src/c/Firmware/README.md`

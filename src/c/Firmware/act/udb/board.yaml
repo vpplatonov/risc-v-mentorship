@@ -1,0 +1,6 @@
+dut:
+  name: board
+  xlen: 64
+  misa: RV64IMAC
+
+# TODO: refine based on actual board ISA/profile and ACT constraints.

@@ -2,3 +2,25 @@
 __pycache__/
 *.py[cod]
 .DS_Store
+SKILLS.md
+
+# Build artifacts
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.elf
+*.bin
+*.hex
+*.map
+*.lst
+
+# Temporary/log files
+*.log
+*.tmp
+*.swp
+*~
