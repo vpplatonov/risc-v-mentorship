@@ -26,6 +26,13 @@ void firmware_main(void) {
     }
     uart_puts("[RUNNER] ELF header signature matching successful (RISC-V 64-bit target confirmed).\n");
 
+    /* ================================================================= */
+    /* [INJECTED CRASH SCENARIO]: Force an Illegal Instruction Trap      */
+    /* Machine code 0x00000000 is strictly reserved as an invalid opcode */
+    /* ================================================================= */
+//     uart_puts("[CRASH_TEST] Injecting explicit illegal instruction word (0x00000000)...\n");
+//     __asm__ volatile(".word 0x00000000");
+
     /* 3. Unpack loadable code segments onto physical RAM address matrices */
     elf_load_segments(elf_raw_base);
 
@@ -37,3 +44,4 @@ void firmware_main(void) {
         /* Execution trap fallback lock */
     }
 }
+
