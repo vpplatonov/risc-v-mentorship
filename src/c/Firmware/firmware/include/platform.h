@@ -3,7 +3,9 @@
 
 #include <stdint.h>
 
+/* Global platform subsystem boundary interfaces */
 void platform_init(void);
-uintptr_t platform_uart_base(void);
+uint8_t *platform_get_test_binary_address(void);
 
-#endif
+#endif /* PLATFORM_H */
+

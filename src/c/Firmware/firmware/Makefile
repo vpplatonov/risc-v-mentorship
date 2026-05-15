@@ -1,38 +1,59 @@
-CC      ?= riscv64-unknown-elf-gcc
-OBJCOPY ?= riscv64-unknown-elf-objcopy
-OBJDUMP ?= riscv64-unknown-elf-objdump
+# --- Microarchitectural Build Blueprint (Complete Monolithic Core) ---
 
-CFLAGS  ?= -Wall -Wextra -O2 -ffreestanding -nostdlib -nostartfiles -Iinclude -mcmodel=medany -march=rv64imac -mabi=lp64
-LDFLAGS ?= -T linker.ld -nostdlib -nostartfiles
+CC      = riscv64-unknown-elf-gcc
+OBJCOPY = riscv64-unknown-elf-objcopy
 
-SRCS_C := src/main.c src/uart.c src/elf_loader.c src/trap.c src/tohost.c src/cache_sync.c src/platform_board.c
-SRCS_S := start.S trap.S
-OBJS   := $(SRCS_C:.c=.o) $(SRCS_S:.S=.o)
+TARGET  = firmware.elf
+BIN     = firmware.bin
 
-TARGET := firmware.elf
-BIN    := firmware.bin
+OBJ_DIR = obj
+INC_DIR = include
+SRC_DIR = src
 
-.PHONY: all clean
+CFLAGS  = -Wall -Wextra -O2 -g -march=rv64g -mabi=lp64d -mcmodel=medany -nostdlib -fno-builtin -I$(INC_DIR)
+LDFLAGS = -T linker.ld -nostdlib
 
-ifneq ($(filter clean,$(MAKECMDGOALS)),clean)
-ifeq ($(findstring riscv,$(CC)),)
-$(error CC='$(CC)' is not a RISC-V compiler. Use make CC=riscv64-unknown-elf-gcc)
-endif
-endif
+# Complete list of objects defining the final runtime state machine footprint
+OBJS    = $(OBJ_DIR)/start.o $(OBJ_DIR)/main.o $(OBJ_DIR)/uart.o $(OBJ_DIR)/platform_board.o $(OBJ_DIR)/tohost.o $(OBJ_DIR)/elf_loader.o $(OBJ_DIR)/trap.o
 
-all: $(TARGET) $(BIN)
+.PHONY: all clean run
 
-%.o: %.c
+all: $(OBJ_DIR) $(TARGET) $(BIN)
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+$(OBJ_DIR)/start.o: start.S
 	$(CC) $(CFLAGS) -c $< -o $@
 
-%.o: %.S
+$(OBJ_DIR)/main.o: $(SRC_DIR)/main.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(TARGET): $(OBJS) linker.ld
-	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $@
+$(OBJ_DIR)/uart.o: $(SRC_DIR)/uart.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/platform_board.o: $(SRC_DIR)/platform_board.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/tohost.o: $(SRC_DIR)/tohost.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/elf_loader.o: $(SRC_DIR)/elf_loader.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/trap.o: $(SRC_DIR)/trap.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(TARGET): $(OBJS)
+	$(CC) $(LDFLAGS) $(OBJS) -o $@
 
 $(BIN): $(TARGET)
 	$(OBJCOPY) -O binary $< $@
 
 clean:
-	rm -f $(OBJS) $(TARGET) $(BIN)
+	rm -rf $(OBJ_DIR) $(TARGET) $(BIN)
+	rm -f $(SRC_DIR)/*.o
+	rm -f *.o
+
+run: all
+	qemu-system-riscv64 -machine virt -nographic -bios none -kernel $(TARGET)
