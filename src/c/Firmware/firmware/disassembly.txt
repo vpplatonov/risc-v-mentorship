@@ -1,0 +1,126 @@
+
+firmware.elf:     file format elf64-littleriscv
+
+
+Disassembly of section .text:
+
+0000000080000000 <_start>:
+    80000000:	00080117          	auipc	sp,0x80
+    80000004:	00010113          	mv	sp,sp
+    80000008:	006000ef          	jal	8000000e <firmware_main>
+    8000000c:	a001                	j	8000000c <_start+0xc>
+
+000000008000000e <firmware_main>:
+    8000000e:	1141                	addi	sp,sp,-16 # 8007fff0 <tohost+0x7fef4>
+    80000010:	e406                	sd	ra,8(sp)
+    80000012:	09c000ef          	jal	800000ae <platform_init>
+    80000016:	01c000ef          	jal	80000032 <uart_init>
+    8000001a:	00000517          	auipc	a0,0x0
+    8000001e:	0ae50513          	addi	a0,a0,174 # 800000c8 <trap_entry+0x12>
+    80000022:	02c000ef          	jal	8000004e <uart_puts>
+    80000026:	6539                	lui	a0,0xe
+    80000028:	ead50513          	addi	a0,a0,-339 # dead <_start-0x7fff2153>
+    8000002c:	072000ef          	jal	8000009e <tohost_set_fail>
+    80000030:	a001                	j	80000030 <firmware_main+0x22>
+
+0000000080000032 <uart_init>:
+    80000032:	8082                	ret
+
+0000000080000034 <uart_putc>:
+    80000034:	1141                	addi	sp,sp,-16
+    80000036:	e022                	sd	s0,0(sp)
+    80000038:	e406                	sd	ra,8(sp)
+    8000003a:	842a                	mv	s0,a0
+    8000003c:	074000ef          	jal	800000b0 <platform_uart_base>
+    80000040:	60a2                	ld	ra,8(sp)
+    80000042:	0004079b          	sext.w	a5,s0
+    80000046:	6402                	ld	s0,0(sp)
+    80000048:	c11c                	sw	a5,0(a0)
+    8000004a:	0141                	addi	sp,sp,16
+    8000004c:	8082                	ret
+
+000000008000004e <uart_puts>:
+    8000004e:	1101                	addi	sp,sp,-32
+    80000050:	ec06                	sd	ra,24(sp)
+    80000052:	e822                	sd	s0,16(sp)
+    80000054:	00054403          	lbu	s0,0(a0)
+    80000058:	cc01                	beqz	s0,80000070 <uart_puts+0x22>
+    8000005a:	e426                	sd	s1,8(sp)
+    8000005c:	84aa                	mv	s1,a0
+    8000005e:	052000ef          	jal	800000b0 <platform_uart_base>
+    80000062:	2401                	sext.w	s0,s0
+    80000064:	0485                	addi	s1,s1,1
+    80000066:	c100                	sw	s0,0(a0)
+    80000068:	0004c403          	lbu	s0,0(s1)
+    8000006c:	f86d                	bnez	s0,8000005e <uart_puts+0x10>
+    8000006e:	64a2                	ld	s1,8(sp)
+    80000070:	60e2                	ld	ra,24(sp)
+    80000072:	6442                	ld	s0,16(sp)
+    80000074:	6105                	addi	sp,sp,32
+    80000076:	8082                	ret
+
+0000000080000078 <elf_load>:
+    80000078:	c219                	beqz	a2,8000007e <elf_load+0x6>
+    8000007a:	00063023          	sd	zero,0(a2)
+    8000007e:	557d                	li	a0,-1
+    80000080:	8082                	ret
+
+0000000080000082 <trap_handler>:
+    80000082:	00000517          	auipc	a0,0x0
+    80000086:	06650513          	addi	a0,a0,102 # 800000e8 <trap_entry+0x32>
+    8000008a:	b7d1                	j	8000004e <uart_puts>
+
+000000008000008c <tohost_set_pass>:
+    8000008c:	0015151b          	slliw	a0,a0,0x1
+    80000090:	00156513          	ori	a0,a0,1
+    80000094:	00000797          	auipc	a5,0x0
+    80000098:	06a7a423          	sw	a0,104(a5) # 800000fc <tohost>
+    8000009c:	8082                	ret
+
+000000008000009e <tohost_set_fail>:
+    8000009e:	0015151b          	slliw	a0,a0,0x1
+    800000a2:	00000797          	auipc	a5,0x0
+    800000a6:	04a7ad23          	sw	a0,90(a5) # 800000fc <tohost>
+    800000aa:	8082                	ret
+
+00000000800000ac <cache_sync_before_exec>:
+    800000ac:	8082                	ret
+
+00000000800000ae <platform_init>:
+    800000ae:	8082                	ret
+
+00000000800000b0 <platform_uart_base>:
+    800000b0:	10000537          	lui	a0,0x10000
+    800000b4:	8082                	ret
+
+00000000800000b6 <trap_entry>:
+    800000b6:	1141                	addi	sp,sp,-16
+    800000b8:	c606                	sw	ra,12(sp)
+    800000ba:	fc9ff0ef          	jal	80000082 <trap_handler>
+    800000be:	40b2                	lw	ra,12(sp)
+    800000c0:	0141                	addi	sp,sp,16
+    800000c2:	30200073          	mret
+    800000c6:	0000                	unimp
+    800000c8:	6966                	ld	s2,88(sp)
+    800000ca:	6d72                	ld	s10,280(sp)
+    800000cc:	65726177          	.insn	4, 0x65726177
+    800000d0:	203a                	.insn	2, 0x203a
+    800000d2:	66616373          	.insn	4, 0x66616373
+    800000d6:	6f66                	ld	t5,88(sp)
+    800000d8:	646c                	ld	a1,200(s0)
+    800000da:	6220                	ld	s0,64(a2)
+    800000dc:	6975                	lui	s2,0x1d
+    800000de:	646c                	ld	a1,200(s0)
+    800000e0:	000a                	c.slli	zero,0x2
+    800000e2:	0000                	unimp
+    800000e4:	0000                	unimp
+    800000e6:	0000                	unimp
+    800000e8:	7274                	ld	a3,224(a2)
+    800000ea:	7061                	c.lui	zero,0xffff8
+    800000ec:	203a                	.insn	2, 0x203a
+    800000ee:	6e75                	lui	t3,0x1d
+    800000f0:	6168                	ld	a0,192(a0)
+    800000f2:	646e                	ld	s0,216(sp)
+    800000f4:	656c                	ld	a1,200(a0)
+    800000f6:	0a64                	addi	s1,sp,284
+	...
