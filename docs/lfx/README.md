@@ -63,10 +63,33 @@ ELF Header:
 ### 4.3. QEMU Pure Bare-Metal Execution Log
 Simulating execution from the physical hardware reset vector using target-isolated arguments (`-bios none -kernel`):
 ```text
-firmware: scaffold build
-QEMU: Terminated
+[PLATFORM] Board system clock and DDR controller initialized.
+
+[BOOT] Hard reset sequence initialized cleanly.
+[BOOT] Core running in Machine Mode (M-Mode).
+[RUNNER] Auditing target payload header integrity...
+[RUNNER] ELF header signature matching successful (RISC-V 64-bit target confirmed).
+[LOADER] Parsing ELF Program Headers...
+[LOADER] Executable code blocks mapped to destination physical target RAM.
+[INFO] Test runner operations completed successfully.
 ```
-Note: The runtime output represents a successful scaffolding execution phase. In this validation step, QEMU safely initializes the virtual state machine, loads the target M-mode entry coordinates, and terminates cleanly without inducing CPU panic or infinite core lockup.
+when the an Illegal Instruction Trap Machine code 0x00000000 forced (main.c ln:34)
+```text
+[PLATFORM] Board system clock and DDR controller initialized.
+
+[BOOT] Hard reset sequence initialized cleanly.
+[BOOT] Core running in Machine Mode (M-Mode).
+[RUNNER] Auditing target payload header integrity...
+[RUNNER] ELF header signature matching successful (RISC-V 64-bit target confirmed).
+[CRASH_TEST] Injecting explicit illegal instruction word (0x00000000)...
+
+[CRITICAL] !!! HARDWARE TRAP ENCOUNTERED !!!
+[TRAP INFO] Type: Synchronous Exception
+[TRAP REASON] Cause: Illegal Instruction Execution Attempt.
+[TRAP STATE] Faulting Instruction Address (mepc): 0x0x
+[TRAP LOCK] Aborting test runner operations due to hardware fault.
+```
+Note: The first runtime output represents a successful scaffolding execution phase. In this validation step, QEMU safely initializes the virtual state machine, loads the target M-mode entry coordinates, and terminates cleanly without inducing CPU panic or infinite core lockup.
 ## 5. Screen Capture Evidence
 *Note: Full-resolution terminal screenshots verifying compilation runs and QEMU outputs are located in the repository at `docs/lfx/images/`.*
 
