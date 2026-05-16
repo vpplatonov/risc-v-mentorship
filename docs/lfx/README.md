@@ -93,7 +93,9 @@ Note: The first runtime output represents a successful scaffolding execution pha
 ## 5. Screen Capture Evidence
 *Note: Full-resolution terminal screenshots verifying compilation runs and QEMU outputs are located in the repository at `docs/lfx/images/`.*
 
-![Compilation and Emulation Workspace Verification](./images/workspace_screenshot.png)
+![Compilation Workspace Verification](./images/make 2026-05-16 at 13.29.22.png)
+
+![Emulation Workspace Verification](./images/risc-v-elf 2026-05-16 at 13.29.54.png)
 
 ## 6. Traceable Component References (GitHub Source Links)
 To maintain strict compliance and auditing standards, the primary architectural blocks can be reviewed via the following direct source references:
