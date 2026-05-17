@@ -4,6 +4,7 @@ This folder is the source of truth for Quartus Prime Lite 25.1 setup and workflo
 
 ## Contents
 
+- [Quick Start Guide](./quikstartguide.md)
 - [Playbook: Install Quartus on macOS](./playbook.md)
 - [Markdown Style Guide](./markdown-style-guide.md)
 - [Setup: macOS + Parallels + Ubuntu + Rosetta](./setup/macos-parallels-ubuntu-rosetta.md)
@@ -14,12 +15,6 @@ This folder is the source of truth for Quartus Prime Lite 25.1 setup and workflo
 - [Config: udev USB-Blaster Rules](./config/udev/51-usbblaster.rules)
 - [Scripts: Bash](./scripts/bash/README.md)
 - [Scripts: C](./scripts/c/README.md)
-
-## Suggested Migration Plan
-
-1. Move each current document section into the closest topic file above.
-2. Move executable snippets into real files under `./scripts/bash` or `./scripts/c`.
-3. Keep `.md` focused on context, assumptions, and usage.
 
 ## Setup Evidence
 
