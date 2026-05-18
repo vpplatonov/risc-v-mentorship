@@ -1,6 +1,6 @@
 # Quartus Documentation
 
-This folder is the source of truth for Quartus Prime Lite 25.1 setup and workflows on macOS + Parallels + Ubuntu + Rosetta.
+This folder is the source of truth for Quartus Prime Lite 25.1 setup and workflows on macOS (Silicon M1) + Parallels + Ubuntu + Rosetta.
 
 ## Contents
 
@@ -21,3 +21,7 @@ This folder is the source of truth for Quartus Prime Lite 25.1 setup and workflo
 - [Quartus compile log screenshot](./assets/images/quartus_compile_log.png)
 
 ![Quartus compile log](./assets/images/quartus_compile_log.png)
+
+- [Quartus program log screenshot](./assets/images/programm-de10-nano.png)
+
+![Quartus program log](./assets/images/programm-de10-nano.png)
